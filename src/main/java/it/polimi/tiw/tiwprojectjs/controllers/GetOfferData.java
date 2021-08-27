@@ -7,6 +7,7 @@ import it.polimi.tiw.tiwprojectjs.beans.User;
 import it.polimi.tiw.tiwprojectjs.dao.DashboardAuctionDAO;
 import it.polimi.tiw.tiwprojectjs.dao.OfferDAO;
 import it.polimi.tiw.tiwprojectjs.utils.ConnectionHandler;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -28,6 +29,7 @@ public class GetOfferData extends HttpServlet {
     /**
      * params:
      * auction_id -> required
+     * type = "LIST" | "WINNING"
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -42,9 +44,11 @@ public class GetOfferData extends HttpServlet {
 
         // Get parameters from request
         Integer auctionId = null;
+        String type = null;
 
         try{
             auctionId = Integer.parseInt(request.getParameter("auction_id"));
+            type = StringEscapeUtils.escapeJava(request.getParameter("type"));
         } catch (NumberFormatException | NullPointerException e){
 
             e.printStackTrace();
@@ -99,23 +103,57 @@ public class GetOfferData extends HttpServlet {
             return;
         }
 
-        // get offer list
         OfferDAO offerDAO = new OfferDAO(connection);
-        List<Offer> offerList = null;
+        String json = null;
 
-        try {
+        switch (type){
 
-            offerList = offerDAO.offerListForAuction(dashboardAuction.getId());
-        } catch (SQLException e){
+            case "LIST":
+                // get offer list
+                List<Offer> offerList = null;
 
-            e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().println("Unable to recover Offer list");
-            return;
+                try {
+
+                    offerList = offerDAO.offerListForAuction(dashboardAuction.getId());
+                } catch (SQLException e){
+
+                    e.printStackTrace();
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.getWriter().println("Unable to recover Offer list");
+                    return;
+                }
+
+                // return a json of the list
+                json = new Gson().toJson(offerList);
+                break;
+
+            case "WINNING":
+                // get winning offer
+                Offer winningOffer = null;
+
+                try {
+
+                    winningOffer = offerDAO.winningBetForAuction(dashboardAuction.getId());
+                } catch (SQLException e){
+
+                    e.printStackTrace();
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.getWriter().println("Unable to recover Offer");
+                    return;
+                }
+
+                // return a json of the list
+                json = new Gson().toJson(winningOffer);
+                break;
+
+            default:
+                // unrecognised type
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println("Incorrect type value");
+                return;
         }
 
-        // return a json of the list
-        String json = new Gson().toJson(offerList);
+
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

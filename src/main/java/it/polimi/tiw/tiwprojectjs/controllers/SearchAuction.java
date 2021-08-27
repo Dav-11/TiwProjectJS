@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "SearchAuction", value = "/SearchAuction")
+@MultipartConfig
 public class SearchAuction extends HttpServlet {
 
     private Connection connection = null;

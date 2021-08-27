@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 @WebServlet(name = "CloseAuction", value = "/CloseAuction")
+@MultipartConfig
 public class CloseAuction extends HttpServlet {
 
     private Connection connection = null;

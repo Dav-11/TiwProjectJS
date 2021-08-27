@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet(name = "AddOffer", value = "/AddOffer")
+@MultipartConfig
 public class AddOffer extends HttpServlet {
 
     private Connection connection =null;

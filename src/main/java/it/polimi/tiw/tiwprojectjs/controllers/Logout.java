@@ -6,6 +6,7 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 
 @WebServlet(name = "Logout", value = "/Logout")
+@MultipartConfig
 public class Logout extends HttpServlet {
 
     @Override

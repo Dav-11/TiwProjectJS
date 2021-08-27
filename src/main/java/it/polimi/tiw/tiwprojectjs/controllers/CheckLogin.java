@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @WebServlet(name = "CheckLogin", value = "/CheckLogin")
+@MultipartConfig
 public class CheckLogin extends HttpServlet {
 
     private Connection connection = null;
