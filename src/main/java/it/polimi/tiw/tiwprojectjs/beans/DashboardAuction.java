@@ -17,7 +17,7 @@ public class DashboardAuction {
     private int id;
     private String description;
     private String name;
-    private InputStream picture; // base64 encoded
+    private InputStream picture;
     private Date end_date;
     private Date start_date;
     private int id_user;

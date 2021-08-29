@@ -62,14 +62,14 @@ public class CreateAuction extends HttpServlet {
         try{
 
             itemName = StringEscapeUtils.escapeJava(request.getParameter("itemName"));
-            itemDescription = ( request.getParameter("itemDescription") == null ) ? null : StringEscapeUtils.escapeJava(request.getParameter("itemDescription"));
+            itemDescription = ( request.getParameter("itemDescription").isEmpty() ) ? null : StringEscapeUtils.escapeJava(request.getParameter("itemDescription"));
             itemPicturePart = request.getPart("itemPicture");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             end_date = (Date) sdf.parse(request.getParameter("end_date"));
             initial_price = Float.parseFloat(request.getParameter("initial_price"));
             min_rise = Float.parseFloat(request.getParameter("min_rise"));
 
-            //System.out.println("itmName: " + itemName + " description:" + itemDescription + " picture: " + itemPicture + " end_date:" + end_date + " min_rise:" + min_rise);
+            System.out.println("itmName: " + itemName + " description:" + itemDescription + " picture: " + itemPicture + " end_date:" + end_date + " min_rise:" + min_rise + " initial_price:" + initial_price);
 
         } catch (NumberFormatException | NullPointerException | ParseException e){
 

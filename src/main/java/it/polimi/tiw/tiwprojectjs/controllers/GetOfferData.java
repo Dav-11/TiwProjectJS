@@ -84,22 +84,8 @@ public class GetOfferData extends HttpServlet {
 
         if (dashboardAuction.getId_user() != user.getId()){
 
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().println("Unauthorized user");
-            return;
-        }
-
-        if (dashboardAuction.isClosed()){
-
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().println("Auction is already closed");
-            return;
-        }
-
-        if (dashboardAuction.isOutDated()){
-
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().println("Auction has past end date");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().println("User do not own the auction");
             return;
         }
 
@@ -109,6 +95,21 @@ public class GetOfferData extends HttpServlet {
         switch (type){
 
             case "LIST":
+
+                if (dashboardAuction.isClosed()){
+
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().println("Auction is already closed");
+                    return;
+                }
+
+                if (dashboardAuction.isOutDated()){
+
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().println("Auction has past end date");
+                    return;
+                }
+
                 // get offer list
                 List<Offer> offerList = null;
 
@@ -128,6 +129,14 @@ public class GetOfferData extends HttpServlet {
                 break;
 
             case "WINNING":
+
+                if (!dashboardAuction.isClosed()){
+
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().println("Auction is not closed");
+                    return;
+                }
+
                 // get winning offer
                 Offer winningOffer = null;
 

@@ -3,24 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <script src="home.js" charset="utf-8" defer></script>
+    <script src="utils.js" charset="utf-8" defer></script>
 </head>
 <body>
     <div class="menu" align="right">
         <p>
-            <a><button>Vendo</button></a>
-            <a><button>Compro</button></a>
-            <a><button>Logout</button></a>
+            <a><button id="sell_button">Vendo</button></a>
+            <a><button id="purchase_button">Compro</button></a>
+            <a><button id="logout_button">Logout</button></a>
         </p>
     </div>
     <table>
-        <td >
+        <td>
+            <div id="auction_create_form">
+                <h3>Completa il form per creare una nuova asta</h3>
+                <form action="#" method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <p>Nome dell' articolo: <input type="text" name="itemName" required /></p>
+                        <p>Descrizione: <input type="text" name="itemDescription" maxlength="500"/></p>
+                        <p>Immagine(jpeg): <input type="file" name="itemPicture" accept="image/jpeg"/></p>
+                        <p>Data di fine: <input type="date" name="end_date" required></p>
+                        <p>Prezzo iniziale: <input type="number" name="initial_price" step="0.01" min="0" required></p>
+                        <p>Rialzo minimo: <input type="number" name="min_rise" step="0.01" min="0" required></p>
+                        <input type="button" name="auct_create" value="Crea Asta">
+                    </fieldset>
+                </form>
+            </div>
             <div id="purchase_auction_search">
                 <form action="#" method="post">
                     <fieldset>
                         <p>
                             <a>Ricerca: </a>
-                            <input type="text" name="keystring" maxlength="500"/>
-                            <input type="button" name="search" value="Cerca">
+                            <input type="text" name="keystring" maxlength="500" />
+                            <input id="search_button" type="button" name="search" value="Cerca">
                         </p>
                     </fieldset>
                 </form>
@@ -40,6 +56,9 @@
                     </thead>
                     <tbody id="open_auction_list_body"></tbody>
                 </table>
+                <p>
+                    <span id="open_auction_list_message"></span>
+                </p>
             </div>
             <div id="closed_auction_list">
                 <h3>Aste Chiuse</h3>
@@ -54,6 +73,9 @@
                     </thead>
                     <tbody id="closed_auction_list_body"></tbody>
                 </table>
+                <p>
+                    <span id="closed_auction_list_message"></span>
+                </p>
             </div>
             <div id="purchase_auction_list">
                 <h3>Aste Disponibili</h3>
@@ -70,9 +92,18 @@
                     </thead>
                     <tbody id="purchase_auction_list_body"></tbody>
                 </table>
+                <p>
+                    <span id="purchase_auction_list_message"></span>
+                </p>
             </div>
         </td>
         <td>
+            <div id="alert_box">
+                <p>
+                    <a>ERRORE: </a>
+                    <span id="alert_message"></span>
+                </p>
+            </div>
             <div id="auction_winner_detail">
                 <h3>Vincitore</h3>
                 <hr>
@@ -88,18 +119,17 @@
                     <a>Indirizzo di spedizione: </a>
                     <span id="winner_sh_address"></span>
                 </p>
+                <p>
+                    <span id="auction_winner_detail_message"></span>
+                </p>
             </div>
             <div id="purchase_offer">
                 <h3>Fai un offerta</h3>
                 <form action="#" method="post" >
                     <fieldset>
                         <p>
-                            <a>Offerta Vincente : </a>
-                            <span id="winning_bet"></span>
-                        </p>
-                        <p>
-                            <a>Rialzo Minimo : </a>
-                            <span id="min_rise"></span>
+                            <a>Offerta Minima : </a>
+                            <span id="minimum_bet"></span>
                         </p>
                         <p>
                             <a>Offerta : </a>
@@ -111,6 +141,9 @@
                         </p>
                         <input type="hidden" name="id_auction" >
                         <input type="button" name="offer" value="Offri">
+                        <p>
+                            <span id="purchase_offer_message"></span>
+                        </p>
                     </fieldset>
                 </form>
             </div>
@@ -166,20 +199,9 @@
                     </thead>
                     <tbody id="offer_list_body"></tbody>
                 </table>
-            </div>
-            <div id="auction_create_form">
-                <h3>Completa il form per creare una nuova asta</h3>
-                <form action="#" method="post" enctype="multipart/form-data">
-                    <fieldset>
-                        <p>Nome dell' articolo: <input type="text" name="itemName" required /></p>
-                        <p>Descrizione: <input type="text" name="itemDescription" maxlength="500"/></p>
-                        <p>Immagine(jpeg): <input type="file" name="itemPicture" accept="image/jpeg"/></p>
-                        <p>Data di fine: <input type="date" name="end_date" required></p>
-                        <p>Prezzo iniziale: <input type="number" name="initial_price" step="0.01" min="0" required></p>
-                        <p>Rialzo minimo: <input type="number" name="min_rise" step="0.01" min="0" required></p>
-                        <input type="button" name="auct_create" value="Crea Asta">
-                    </fieldset>
-                </form>
+                <p>
+                    <span id="auction_offer_list_message"></span>
+                </p>
             </div>
         </td>
     </table>

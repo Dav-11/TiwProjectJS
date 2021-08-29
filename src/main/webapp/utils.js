@@ -20,10 +20,15 @@ function makeCall(method, url, formElement, callback, reset = true) {
 }
 
 function setCookie(key, value, expiryDays) {
+
+    value = value.replace(/(\r\n|\n|\r)/gm, "");
+
     let date = new Date();
     date.setTime(date.getTime() + (expiryDays * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
-    document.cookie = key + "=" + value + "; " + expires + "; path=/"
+    const cookie = key + "=" + value + "; " + expires + "; path=/";
+    console.log("COOKIE = " + cookie);
+    document.cookie = cookie;
 }
 
 function getCookie(key) {
@@ -35,7 +40,8 @@ function getCookie(key) {
 
     // split the line in an array of string, one for each cookie
     const cookieArray = decoded.split('; ');
-    let value;
+    console.log(cookieArray);
+    let value = null;
 
     // for each line of the array
     cookieArray.forEach( (string) => {
@@ -43,4 +49,13 @@ function getCookie(key) {
     })
 
     return value;
+}
+
+function cancelCookie(key){
+
+    let date = new Date();
+    const expires = "expires=" + date.toUTCString();
+    const cookie = key + "=" + "" + "; " + expires + "; path=/";
+    console.log("COOKIE = " + cookie);
+    document.cookie = cookie;
 }

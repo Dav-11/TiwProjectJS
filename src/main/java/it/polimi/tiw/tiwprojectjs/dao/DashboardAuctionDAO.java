@@ -103,7 +103,7 @@ public class DashboardAuctionDAO {
 
                 if (!result.isBeforeFirst()) {
 
-                    return null; // no user found
+                    return null; // no auction found
                 } else {
 
                     result.next();

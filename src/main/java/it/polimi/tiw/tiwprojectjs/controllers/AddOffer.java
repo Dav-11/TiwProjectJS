@@ -103,7 +103,7 @@ public class AddOffer extends HttpServlet {
         if ( (amount == -1) || (amount < (dashboardAuction.getMinOffer()))){
 
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().println("Offer is less than required");
+            response.getWriter().println("Offer must be higher than:" + dashboardAuction.getMinOffer() );
             return;
         }
 

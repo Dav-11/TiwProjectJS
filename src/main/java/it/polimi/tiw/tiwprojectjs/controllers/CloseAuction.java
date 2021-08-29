@@ -73,8 +73,8 @@ public class CloseAuction extends HttpServlet {
 
             if (dashboardAuction.getId_user() != user.getId()){
 
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().println("Unauthorized user");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().println("User is not the owner");
                 return;
             }
 
