@@ -29,6 +29,7 @@
 
             document.getElementById("purchase_button").addEventListener("click", () => {
 
+                setCookie("lastAction", "COMPRO", 30);
                 this.alertBox.reset();
                 orchestrator.showPurchase();
             })
@@ -510,6 +511,7 @@
 
                                 case 200:
 
+                                    setCookie("lastAction", "VENDO", 30);
                                     openAuctionList.show();
                                     closedAuctionList.show();
                                     break;
@@ -600,15 +602,22 @@
 
                         case 200:
 
+                            // get the auction
                             auction = JSON.parse(request.responseText);
 
+                            // calculate the min offer
                             if (auction.winningBet > 0){
                                 minOffer = auction.winningBet + auction.min_rise;
                             } else {
                                 minOffer = auction.initial_price + auction.min_rise;
                             }
 
+                            // sets the min offer
                             document.getElementById("minimum_bet").textContent = minOffer;
+
+                            // sets the auction_id as a hidden input
+                            this.divContainer.querySelector("input[type = 'hidden']").value = auction.id;
+
                             break;
 
                         case 403:
@@ -623,55 +632,62 @@
                 }
             });
 
-            if (auction){
+            // shows the div
+            this.divContainer.style.display = "block";
+        }
 
-                this.divContainer.querySelector("input[type='button']").addEventListener('click', (e) => {
+        this.registerEvents = () =>{
 
-                    let form = e.target.closest("form");
+            this.divContainer.querySelector("input[type='button']").addEventListener('click', (e) => {
 
-                    form.querySelector("input[type = 'hidden']").value = auction.id;
+                // gets the form
+                let form = e.target.closest("form");
 
-                    if (form.checkValidity()){
+                if (form.checkValidity()){
 
-                        let amount = this.divContainer.querySelector('[name="amount"]').value;
+                    // check if the specified amount is more then the minimum
+                    let amount = this.divContainer.querySelector('[name="amount"]').value;
 
-                        if (amount < minOffer){
+                    // get the minOffer attribute
+                    let minOffer = document.getElementById("minimum_bet").textContent;
 
-                            alert("L'offerta deve essere maggiore del minimo di: " + minOffer);
-                            return;
-                        } else {
+                    // checks if the offer is less than the minimum
+                    if (amount < minOffer){
 
-                            makeCall("POST", "AddOffer", form, (request)=>{
-
-                                if (request.readyState === XMLHttpRequest.DONE) {
-
-                                    let message = request.responseText;
-
-                                    switch (request.status) {
-
-                                        case 200:
-                                            pageOrchestrator.showPurchase();
-                                            break;
-
-                                        case 400:
-                                            cancelCookie('username');
-                                            window.location.href = "index.html";
-                                            break;
-
-                                        default:
-                                            alert(message);
-                                            break;
-                                    }
-                                }
-                            })
-                        }
+                        alert("L'offerta deve essere maggiore del minimo di: " + minOffer);
+                        return;
                     } else {
 
-                        form.reportValidity();
+                        // makes the call to save the offer
+                        makeCall("POST", "AddOffer", form, (request)=>{
+
+                            if (request.readyState === XMLHttpRequest.DONE) {
+
+                                let message = request.responseText;
+
+                                switch (request.status) {
+
+                                    case 200:
+                                        pageOrchestrator.showPurchase();
+                                        break;
+
+                                    case 403:
+                                        cancelCookie('username');
+                                        window.location.href = "index.html";
+                                        break;
+
+                                    default:
+                                        alert(message);
+                                        break;
+                                }
+                            }
+                        })
                     }
-                });
-            }
-            this.divContainer.style.display = "block";
+                } else {
+
+                    form.reportValidity();
+                }
+            });
         }
     }
 
@@ -683,12 +699,11 @@
             this.divContainer.style.display = "none";
         }
 
-        this.show = (auctionId) => {
+        this.registerEvents = () => {
 
             this.divContainer.querySelector("input[type='button']").addEventListener('click', (e) => {
 
                 let form = e.target.closest("form");
-                form.querySelector("input[type = 'hidden']").value = auctionId;
 
                 if (form.checkValidity()){
 
@@ -722,6 +737,11 @@
                     form.reportValidity();
                 }
             })
+        }
+
+        this.show = (auctionId) => {
+
+            this.divContainer.querySelector("input[type = 'hidden']").value = auctionId;
 
             this.divContainer.style.display = "block";
         }
@@ -926,11 +946,13 @@
             offerForm = new OfferForm(
                 document.getElementById("purchase_offer")
             );
+            offerForm.registerEvents();
             offerForm.hide();
 
             auctionCloseButton = new AuctionCloseButton(
                 document.getElementById("auction_close_button")
             );
+            auctionCloseButton.registerEvents();
             auctionCloseButton.hide();
 
             auctionOfferList = new AuctionOfferList(
@@ -947,10 +969,10 @@
             let lastAction = getCookie("lastAction");
             if (lastAction === "VENDO"){
 
-
+                this.showSell();
             } else {
 
-
+                this.showPurchase();
             }
 
         }
@@ -1036,6 +1058,7 @@
             if ( (!(lastUser)) || (lastUser !== userName) ){
 
                 cancelCookie('recentlyViewedAuction');
+                cancelCookie("lastAction");
             }
 
             setCookie('lastUser', userName, 30);

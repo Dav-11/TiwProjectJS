@@ -29,7 +29,7 @@ public class GetOfferData extends HttpServlet {
     /**
      * params:
      * auction_id -> required
-     * type = "LIST" | "WINNING"
+     * type -> "LIST" | "WINNING" required
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -103,12 +103,12 @@ public class GetOfferData extends HttpServlet {
                     return;
                 }
 
-                if (dashboardAuction.isOutDated()){
+                /*if (dashboardAuction.isOutDated()){
 
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     response.getWriter().println("Auction has past end date");
                     return;
-                }
+                }*/
 
                 // get offer list
                 List<Offer> offerList = null;

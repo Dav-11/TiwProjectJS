@@ -27,7 +27,7 @@ function setCookie(key, value, expiryDays) {
     date.setTime(date.getTime() + (expiryDays * 24 * 60 * 60 * 1000));
     const expires = "expires=" + date.toUTCString();
     const cookie = key + "=" + value + "; " + expires + "; path=/";
-    console.log("COOKIE = " + cookie);
+    console.log("COOKIE = " + cookie); //TODO: delete
     document.cookie = cookie;
 }
 
@@ -40,7 +40,7 @@ function getCookie(key) {
 
     // split the line in an array of string, one for each cookie
     const cookieArray = decoded.split('; ');
-    console.log(cookieArray);
+    console.log(cookieArray); //TODO: delete
     let value = null;
 
     // for each line of the array
@@ -56,6 +56,6 @@ function cancelCookie(key){
     let date = new Date();
     const expires = "expires=" + date.toUTCString();
     const cookie = key + "=" + "" + "; " + expires + "; path=/";
-    console.log("COOKIE = " + cookie);
+    console.log("COOKIE = " + cookie); //TODO: delete
     document.cookie = cookie;
 }
