@@ -547,6 +547,7 @@
         this.show = (auctionId) => {
 
             this.divContainer.style.display = "block";
+            document.getElementById("auction_winner_detail_message").textContent = "";
 
             makeCall("GET", "GetOfferData?auction_id=" + auctionId + "&type=" + "WINNING", null, (request) => {
 
@@ -560,9 +561,23 @@
 
                             let offer = JSON.parse(request.responseText);
 
-                            document.getElementById("winner_name").textContent = offer.userUserName;
-                            document.getElementById("winner_bet").textContent = offer.amount;
-                            document.getElementById("winner_sh_address").textContent = offer.sh_address;
+                            if (offer == null){
+
+                                document.getElementById("winner_name_par").style.display = "none";
+                                document.getElementById("winner_bet_par").style.display = "none";
+                                document.getElementById("winner_sh_address_par").style.display = "none";
+
+                                document.getElementById("auction_winner_detail_message").textContent = "Nessuna offerta";
+                            } else {
+
+                                document.getElementById("winner_name_par").style.display = "block";
+                                document.getElementById("winner_bet_par").style.display = "block";
+                                document.getElementById("winner_sh_address_par").style.display = "block";
+
+                                document.getElementById("winner_name").textContent = offer.userUserName;
+                                document.getElementById("winner_bet").textContent = offer.amount;
+                                document.getElementById("winner_sh_address").textContent = offer.sh_address;
+                            }
                             break;
 
                         case 403:
@@ -591,6 +606,7 @@
 
             let auction = null;
             let minOffer = null;
+            document.getElementById("purchase_offer_message").textContent = "";
 
             makeCall("GET", "GetAuctionDetail?auction_id=" + auctionId, null, (request) => {
 
@@ -840,6 +856,11 @@
                 oldImage.parentNode.removeChild(oldImage);
             }
 
+            let oldErrorParagraph = document.getElementById("auction_detail_message");
+            if (oldErrorParagraph){
+                oldErrorParagraph.parentNode.removeChild(oldErrorParagraph);
+            }
+
             makeCall("GET", "GetAuctionDetail?auction_id=" + auctionId, null, (request) => {
 
                 if (request.readyState === XMLHttpRequest.DONE) {
@@ -882,6 +903,7 @@
 
                         default:
                             let errorParagraph = document.createElement("p");
+                            errorParagraph.id = "auction_detail_message";
                             errorParagraph.textContent = "ERROR: " + message;
                             return;
                     }
